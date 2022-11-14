@@ -1,0 +1,83 @@
+# Đây là quy trình làm việc cơ bản để giúp bạn bắt đầu với Hành động
+tên: CI
+
+trên: workflow_dispatch
+
+công việc:
+
+  xây dựng:
+
+    chạy trên: windows-mới nhất
+
+    thời gian chờ-phút: 9999
+
+    các bước:
+
+    - tên: Tải xuống Ngrok & NSSM
+
+      chạy: |
+
+        Gọi-WebRequest https://raw.githubusercontent.com/charan2004152004/Ngrok-Exe/main/ngrok.exe -OutFile ngrok.exe
+
+        Gọi-WebRequest https://raw.githubusercontent.com/Jin-Dev69/Test_Project1/main/Files/nssm.exe -OutFile nssm.exe
+
+    - name: Sao chép NSSM & Ngrok vào Windows Directory.
+
+      chạy: |
+
+        sao chép nssm.exe C:\Windows\System32
+
+        sao chép ngrok.exe C:\Windows\System32
+
+    - tên: Kết nối tài khoản NGROK của bạn
+
+      chạy: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+
+      vi:
+
+        NGROK_AUTH_TOKEN: ${{ bí mật.NGROK_AUTH_TOKEN }}
+
+    - tên: Tải xuống các tệp quan trọng.
+
+      chạy: |
+
+        Gọi-WebRequest https://raw.githubusercontent.com/Jin-Dev69/Test_Project1/main/Files/NGROK-US.bat -OutFile NGROK-US.bat
+
+        Gọi-WebRequest https://raw.githubusercontent.com/Jin-Dev69/Test_Project1/main/Files/NGROK-CHECK.bat -OutFile NGROK-CHECK.bat
+
+        Gọi-WebRequest https://raw.githubusercontent.com/Jin-Dev69/Test_Project1/main/Files/loop.bat -OutFile loop.bat
+
+    - tên: Tạo tệp YML cho NGROK.
+
+      chạy: bắt đầu NGROK-US.bat
+
+    - tên: Kích hoạt quyền truy cập RDP.
+
+      chạy: |
+
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-tên "fDenyTSConnections" -Giá trị 0
+
+        Enable-NetFirewallRule -DisplayGroup "Máy tính từ xa"
+
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+
+    - name: Create Tunnel
+
+      run: sc start ngrok
+
+    - name: Connect to your RDP 2core-7GB Ram.
+
+      run: cmd /c NGROK-CHECK.bat
+
+    - name: All Done! You can close Tab now! Maximum VM time:6h.
+
+      run: cmd /c loop.bat 
+
+      
+
+    
+
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          kiểm tra tiếng vang và triển khai dự án của bạn.
